@@ -2,7 +2,8 @@
 const axios = require('axios').default;
 
 
-var u = [ 'https://t-api.debit.com.br/ping', 
+var u = [ 'https://a-api.debit.com.br/calculosDiversos/ping',
+            'https://t-api.debit.com.br/trabalhista-w/ping', 
           'https://a-api.debit.com.br/atualiza/ping',
           'https://api.debit.com.br/email/ping', 
           'https://api.debit.com.br/lista/ping', 

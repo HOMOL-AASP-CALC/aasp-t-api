@@ -10,7 +10,7 @@ this. mysql_senha = process.env.MYSQL_password
 if (process.env.MYSQL_host != "localhost") {
     this.mysql_senha = this.mysql_senha+"#";
 }
-this.mysql_info = {host: process.env.MYSQL_host, 	user: process.env.MYSQL_user,	password: this.mysql_senha, database: 'debit' }
+this.mysql_info = {host: process.env.MYSQL_host, 	user: process.env.MYSQL_user,	password: this.mysql_senha, database:   process.env.MYSQL_database_debit  }
 
 this.handleDisconnect = function() {
     con =   mysql.createPool(this.mysql_info).promise() // mysql1.createConnection(mysql_info); 

@@ -34,9 +34,9 @@ const mysqlDisconnect = function( dbName ) {
     return m1;
 }
 
-var con = mysqlDisconnect('debit')
-var conCalculos = mysqlDisconnect('calculos')
-var conTrab = mysqlDisconnect('trabalhista')
+var con = mysqlDisconnect(process.env.MYSQL_database_debit )
+var conCalculos = mysqlDisconnect(process.env.MYSQL_database_calculos)
+var conTrab = mysqlDisconnect(process.env.MYSQL_database_trabalhista)
 
 const processo = require('./processos.js');
 const calcPDF = require('./calcPDF.js');
@@ -62,7 +62,9 @@ app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 
-const io = new Server(server, { cors: cors1 });
+const io = new Server(server, { cors: cors1, cookie: true, pingTimeout: 180000, path: '/trabalhistasocket' });
+
+
 
 const axios = require('axios').default;
 var calcUtil = require('./calcUtil.js');
@@ -84,7 +86,7 @@ tem_permissao = async function  (idCalc, cookie) {
 }
 
 iniciarCalc = async function(id,c) {
-	// console.log('iniciarCalc', id, c)
+	console.log('#### iniciarCalc')
 	let [ listaCalc ] = await con.promise().query(`select * from lista_calculo where id=${id}`)
 	let nome = 'Novo trabalhista'
 	if (id == 0 || listaCalc.length <= 0) {
@@ -161,6 +163,7 @@ resetCalc = function(id) {
 	calc[ id ].comandos = {} 
 	calc[ id ].atualizaVerbasDiversas( calc[id])
 }
+
 
 
 
@@ -365,13 +368,13 @@ const criaCalculo  = async function (c) {
     return r.insertId
 }
 
-app.get('/resetTabelas',  cors(), function (req, res) {
+app.get('/trabalhista-w/resetTabelas',  cors(), function (req, res) {
 	leTabelas () 
 })
 
 
 
-app.get('/tabelasCorrecaoMonetaria',  cors(), function (req, res) {
+app.get('/trabalhista-w/tabelasCorrecaoMonetaria',  cors(), function (req, res) {
 	// console.log('passei')
 	con.query(`select id, dia, nome from tabelas_trabalhistas where id<>1100 and id>=871 order by id desc`, function(e,r) {
 		// console.log('passei')
@@ -384,7 +387,7 @@ app.get('/tabelasCorrecaoMonetaria',  cors(), function (req, res) {
 	});
 })
 
-app.get('/tabelasDSR',  cors( cors1 ), function (req, res) {
+app.get('/trabalhista-w/tabelasDSR',  cors( cors1 ), function (req, res) {
 	let c1 = cookie_uncrypt( req.cookies['c_v_app'] )  
 	let id_dono = c1.v_id_dono 
 
@@ -400,7 +403,7 @@ app.get('/tabelasDSR',  cors( cors1 ), function (req, res) {
 })
 
 
-app.get('/listaCartaoPonto',  cors( cors1 ), function (req, res) {
+app.get('/trabalhista-w/listaCartaoPonto',  cors( cors1 ), function (req, res) {
 	let c1 = cookie_uncrypt( req.cookies['c_v_app'] )  
 	var id_login = c1.v_id_dono 
 
@@ -415,7 +418,7 @@ app.get('/listaCartaoPonto',  cors( cors1 ), function (req, res) {
 
 })
 
-app.get('/lista_todos_calc',  cors( cors1 ), function (req, res) {
+app.get('/trabalhista-w/lista_todos_calc',  cors( cors1 ), function (req, res) {
 
 	var l  = "<html>"
 	var l = l + "<table style='padding: 10px; border: 1px solid grey;'>"
@@ -430,7 +433,7 @@ app.get('/lista_todos_calc',  cors( cors1 ), function (req, res) {
 	res.send(l)
 })
 
-app.get('/copiar/:id/:id_novo',  cors(), function (req, res) {
+app.get('/trabalhista-w/copiar/:id/:id_novo',  cors(), function (req, res) {
 	var id = req.params.id  
 	var id_novo  = req.params.id_novo 
 
@@ -480,11 +483,15 @@ app.get('/copiar/:id/:id_novo',  cors(), function (req, res) {
 });
 
 
-app.get('/ping', async function(req, res) {
-	res.send('{ok:1}')
+app.get('/trabalhista-w/ping', async function(req, res) {
+	res.send('{ok:2,msg:"novo caminho"}')
 })
 
-app.get('/pdf/:id', async function(req, res) {
+app.get('/trabalhistasocket/ping', async function(req, res) {
+	res.send('{ok:3,msg:"socket"}')
+})
+
+app.get('/trabalhista-w/pdf/:id', async function(req, res) {
 	var id = req.params.id
 	var c = cookie_uncrypt( req.cookies['c_v_app'] )
 	if (typeof calc[ id ] === 'undefined' || calc[id] == null ) {
@@ -523,7 +530,7 @@ app.get('/pdf/:id', async function(req, res) {
 	calcPDF.montaCalc( myDoc, calc[ id ].getDump()  )
 });
 
-app.get('/html/:id', async function(req, res) {
+app.get('/trabalhista-w/html/:id', async function(req, res) {
 	var id = req.params.id
 	var c = cookie_uncrypt( req.cookies['c_v_app'] )
 	
@@ -542,7 +549,7 @@ app.get('/html/:id', async function(req, res) {
 	// res.send('') 
 });
 
-app.get('/tabCorrecao/:dia_citacao/:dia_atual/:modo_calc',  cors(), function (req, res) {
+app.get('/trabalhista-w/tabCorrecao/:dia_citacao/:dia_atual/:modo_calc',  cors(), function (req, res) {
 	var dia_citacao = req.params.dia_citacao
 	var dia_atual = req.params.dia_atual 
 	var modo_calc = req.params.modo_calc
@@ -730,8 +737,8 @@ function cookie_uncrypt(cookie_criptografado) {
 		return { v_id_dono: 0, v_usuario_logado: 0 };
 	}
 
-	const key = process.env.cookie_key //!IMPORTANTE: deixar igual ao php no verifica login
-	const interacoes = 481 //!IMPORTANTE: deixar igual ao php no verifica login
+	const key = process.env.cookie_key  
+	const interacoes = process.env.cookie_interacoes  
 	const Encryption = require('./Encryption.js')
 	const encryption = new Encryption()
 	const cookie_descriptografado = encryption.decrypt(cookie_criptografado, key, interacoes)

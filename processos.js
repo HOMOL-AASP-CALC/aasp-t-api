@@ -1,4 +1,4 @@
-module.exports = function (id, my1, my2, dono, nomeCalc, assinante) {
+module.exports = function (id, my1, my2, dono, nomeCalc, assinante, infoUsuario1) {
     var calcUtil = require('./calcUtil.js');
     var axios = require('axios');
     require('dotenv').config() 
