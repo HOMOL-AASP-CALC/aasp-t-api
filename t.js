@@ -43,30 +43,19 @@ const calcPDF = require('./calcPDF.js');
 const calcHTML = require('./calcHTML.js');
 
 const cors1 = {
-    origin: "https://trabalhista.debit.com.br",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    origin: "https://trabaaspcalc.aasp.org.br",
+    methods: "GET,HEAD,OPTION,PUT,PATCH,POST,DELETE",
     credentials: true
 }
 
-const allowedDomains = process.env.allowedDomains
-const corsOptionsDelegate = function (req, callback) {
-	let corsOptions= {
-		methods: 'GET,POST',
-		credentials: true
-	}
-	if (allowedDomains.indexOf(req.header('Origin')) !== -1) {
-		// console.log('entrou')
-		corsOptions.origin =true; // Permitir domínio na lista
-	} else {
-		// console.log('nao permitiu')
-		corsOptions.origin= false ; // Bloquear domínios não permitidos
-	}
-	callback(null, corsOptions);
-};
+if (process.env.MYSQL_host == "localhost") {
+	cors1.origin = "http://trabalhista.fastbet.win"
+}
 
 var app = express();
+app.use(cors(  cors1 ))
 app.use(cookieParser());
-app.use(cors(corsOptionsDelegate));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
