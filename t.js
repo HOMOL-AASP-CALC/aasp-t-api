@@ -48,14 +48,25 @@ const cors1 = {
     credentials: true
 }
 
-if (process.env.MYSQL_host == "localhost") {
-	cors1.origin = "http://trabalhista.fastbet.win"
-}
+const allowedDomains = process.env.allowedDomains
+const corsOptionsDelegate = function (req, callback) {
+	let corsOptions= {
+		methods: 'GET,POST',
+		credentials: true
+	}
+	if (allowedDomains.indexOf(req.header('Origin')) !== -1) {
+		// console.log('entrou')
+		corsOptions.origin =true; // Permitir domínio na lista
+	} else {
+		// console.log('nao permitiu')
+		corsOptions.origin= false ; // Bloquear domínios não permitidos
+	}
+	callback(null, corsOptions);
+};
 
 var app = express();
-app.use(cors(  cors1 ))
 app.use(cookieParser());
-
+app.use(cors(corsOptionsDelegate));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
