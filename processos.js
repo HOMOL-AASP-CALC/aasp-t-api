@@ -251,6 +251,8 @@ module.exports = function (id, my1, my2, dono, nomeCalc, assinante, infoUsuario1
 
         axios.post(url1, dados)
             .then(function (r) {
+                console.log('****** tabela de correção recebida ', r.data)
+
                 let tabela = {}
 
                 for (let i in r.data) {
