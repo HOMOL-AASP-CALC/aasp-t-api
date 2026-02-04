@@ -508,8 +508,16 @@ app.get('/trabalhista-w/pdf/:id', async function(req, res) {
 	}
 
 	var urlLogoInfo =  process.env.urlLogoInfo 
-	var logoInfoTemp = await axios.get(urlLogoInfo+'?id='+id_login)
-	var logoInfo = logoInfoTemp.data
+	var logoInfoTemp = ''
+
+	try {
+		logoInfoTemp = await axios.get(urlLogoInfo+'/'+id_login)
+		logoInfo = logoInfoTemp.data
+
+	} catch	(err) {
+		console.log('erro ao abrir o logo no axios. id_Calc')
+		logoInfo = 'sem_logo'
+	}
 
 	var myDoc = new PDFDocument({
 		bufferPages: true, 
