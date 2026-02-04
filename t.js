@@ -516,6 +516,7 @@ app.get('/trabalhista-w/pdf/:id', async function(req, res) {
 		logoInfo = logoInfoTemp.data
 
 	} catch	(err) {
+		console.error(err)
 		console.log('erro ao abrir o logo no axios. id_Calc')
 		logoInfo = 'sem_logo'
 	}

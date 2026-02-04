@@ -262,6 +262,7 @@ module.exports = function (id, my1, my2, dono, nomeCalc, assinante, infoUsuario1
             }
 
         }).catch(function (error) {
+            console.error(error)
             console.log('erro axios processos.js - tabelaDireta -  l: 191 - ', url1)
         }); 
     }
