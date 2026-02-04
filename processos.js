@@ -270,18 +270,20 @@ module.exports = function (id, my1, my2, dono, nomeCalc, assinante, infoUsuario1
                 }
             })
             .catch(function (error) {
-                console.error('Erro Axios ou processamento')
-
-                console.error('ma:', ma)
-                console.error('url:', url1)
-                console.error('dados:', dados)
-
-                if (responseAxios) {
-                    console.error('response.data:', responseAxios.data)
-                    console.error('status:', responseAxios.status)
-                }
-
-                console.error(error)
+                console.log('erro axios processos.js - tabelaDireta -  l: 191 - ', url1)
+                //descomentar para debugar
+                // console.error('Erro Axios ou processamento')
+                //
+                // console.error('ma:', ma)
+                // console.error('url:', url1)
+                // console.error('dados:', dados)
+                //
+                // if (responseAxios) {
+                //     console.error('response.data:', responseAxios.data)
+                //     console.error('status:', responseAxios.status)
+                // }
+                //
+                // console.error(error)
             })
 
     }
