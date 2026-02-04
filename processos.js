@@ -248,10 +248,11 @@ module.exports = function (id, my1, my2, dono, nomeCalc, assinante, infoUsuario1
         // console.log('****** url1 ', url1, dados)
 
         let ma = null
+        let responseAxios = null
 
         axios.post(url1, dados)
             .then(function (r) {
-                console.log('****** tabela de correção recebida ', r.data)
+                responseAxios = r
 
                 let tabela = {}
 
@@ -269,11 +270,18 @@ module.exports = function (id, my1, my2, dono, nomeCalc, assinante, infoUsuario1
                 }
             })
             .catch(function (error) {
-                console.error(error)
-                console.error('Erro Axios')
+                console.error('Erro Axios ou processamento')
+
                 console.error('ma:', ma)
                 console.error('url:', url1)
                 console.error('dados:', dados)
+
+                if (responseAxios) {
+                    console.error('response.data:', responseAxios.data)
+                    console.error('status:', responseAxios.status)
+                }
+
+                console.error(error)
             })
 
     }
