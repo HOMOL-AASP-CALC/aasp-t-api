@@ -507,7 +507,8 @@ app.get('/trabalhista-w/pdf/:id', async function(req, res) {
 		return;
 	}
 
-	var urlLogoInfo =  process.env.urlLogoInfo 
+	var urlLogoInfo =  process.env.urlLogoInfo
+	var logoInfo = ''
 	var logoInfoTemp = ''
 
 	try {
