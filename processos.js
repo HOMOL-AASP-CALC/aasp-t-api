@@ -243,30 +243,37 @@ module.exports = function (id, my1, my2, dono, nomeCalc, assinante, infoUsuario1
             selic_inicio: calcUtil.dia2intMesAno( t.v.dataci )            
         }
 
-        t.v.tabelaCorrecaoNome = nome 
+        t.v.tabelaCorrecaoNome = nome
 
         // console.log('****** url1 ', url1, dados)
 
-        axios.post(url1, dados).then( function(r) {
-            let tabela = {} 
-            // console.table(r.data)
-            for (let i in r.data) {
-                let item = r.data[i]
-                tabela[ item.mesano ] = item
-            }
-            for (let i in t.a.base.planilha) {
-                let ma = t.a.base.planilha[ i ].diaInt 
-                t.a.base.planilha[ i ].indiceCorrecao = tabela[ ma ].indiceGerado
-                t.a.base.planilha[ i ].selicAcumulada = tabela[ ma ].selicAcumulada
-                t.a.base.planilha[ i ].juros = tabela[ ma  ].juros
-            }
+        let ma = null
 
-        }).catch(function (error) {
-            console.error(error)
-            console.error(nome)
-            console.error(t.v.ic_indexador)
-            console.log('erro axios processos.js - tabelaDireta -  l: 191 - ', url1)
-        }); 
+        axios.post(url1, dados)
+            .then(function (r) {
+                let tabela = {}
+
+                for (let i in r.data) {
+                    let item = r.data[i]
+                    tabela[item.mesano] = item
+                }
+
+                for (let i in t.a.base.planilha) {
+                    ma = t.a.base.planilha[i].diaInt
+
+                    t.a.base.planilha[i].indiceCorrecao = tabela[ma].indiceGerado
+                    t.a.base.planilha[i].selicAcumulada = tabela[ma].selicAcumulada
+                    t.a.base.planilha[i].juros = tabela[ma].juros
+                }
+            })
+            .catch(function (error) {
+                console.error(error)
+                console.error('Erro Axios')
+                console.error('ma:', ma)
+                console.error('url:', url1)
+                console.error('dados:', dados)
+            })
+
     }
 
     this.calculosEspeciais.tabelaCorrecao = function ( t ) {
