@@ -16,19 +16,16 @@ npm install
 Crie um arquivo `.env` na raiz do projeto definindo as variáveis de ambiente utilizadas. Segue um exemplo de configuração:
 
 ```ini
-MYSQL_host=localhost
-MYSQL_user=usuario
-MYSQL_password=senha
-MYSQL_password2=senha2
-MYSQL_database=debit
 
-pasta_calculos=/caminho/para/calculos
-pasta_log=/caminho/para/logs
-servidorAPI=https://api.aasp.org.br
-servidorGeralAPI=https://geral.aasp.org.br
-uploadDir=/caminho/para/uploads
-urlLogoInfo=https://exemplo.com/logo
-urlRenomeiaCalc=https://exemplo.com/renomear
+MYSQL_host=localhost
+MYSQL_user=root
+MYSQL_password=simples123
+MYSQL_database=debit-trabalhista
+
+servidorWWW=https://www.aasp.org.br
+servidorAPI=https://api.aasp.org 
+
+pasta_calculos=/Users/mrozgrin/calculos_trabalhistas
 ```
 
 
